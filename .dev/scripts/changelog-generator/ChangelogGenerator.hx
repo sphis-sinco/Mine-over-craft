@@ -50,7 +50,7 @@ class ChangelogGenerator {
 
 		filename += '.md';
 		trace('Generated changelog file: ' + filename);
-		File.saveContent(Compiler.getDefine('file_output_path_prefix') + filename, resultChangelog);
+		File.saveContent((Compiler.getDefine('file_output_path_prefix') ?? '') + filename, resultChangelog);
 	}
 
 	static function checkForDupeFileName(filename:String, ?starting_index:Int = 0):String {
