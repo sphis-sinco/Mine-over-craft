@@ -1,0 +1,26 @@
+{
+    "product_name": "MineOverCraft",
+    "version": "1.0",
+
+    "topics": [
+        {
+            "topic": "ADDITION",
+            "topic_id": "added"
+        },
+        {
+            "topic": "TWEAK",
+            "topic_id": "tweak"
+        }
+    ],
+
+    "entries": [
+        {
+            "topic_id": "added",
+            "text": "Harsan Block"
+        },
+        {
+            "topic_id": "tweak",
+            "text": "On a new world you are sent to the MOCD (Dummy Name) Dimension"
+        }
+    ]
+}
