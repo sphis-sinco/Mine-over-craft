@@ -3,19 +3,21 @@ import sys.FileSystem;
 import sys.io.File;
 import haxe.Json;
 
+using StringTools;
+
 class ChangelogGenerator {
 	static var changelogJson:Changelog;
 	static var resultChangelog:String;
 
 	public static function main() {
-		var input_path = (Compiler.getDefine('file_input_path') ?? 'changelog') + '.json';
+		var input_path = (Compiler.getDefine('file_input_path').replace('"', '') ?? 'changelog') + '.json';
 		if (input_path == null || input_path == 'null.json')
 			input_path = 'changelog.json';
 
-        if (!FileSystem.exists(input_path))
-            throw 'Your input path ($input_path) doesnt exit'; 
+		if (!FileSystem.exists(input_path))
+			throw 'Your input path ($input_path) doesnt exit';
 
-        trace('Your input path($input_path) exists!');
+		trace('Your input path($input_path) exists!');
 		changelogJson = Json.parse(File.getContent(input_path));
 
 		var topics:Map<Dynamic, String> = new Map<Dynamic, String>();
@@ -39,8 +41,8 @@ class ChangelogGenerator {
 			resultChangelog += finalEntry + '\n';
 		}
 
-		var filename = '';
-		filename = ((changelogJson.product_name != null) ? changelogJson.product_name : 'changelog');
+		var filename = (Compiler.getDefine('file_output_path_prefix').replace('"', '') ?? '');
+		filename += ((changelogJson.product_name != null) ? changelogJson.product_name : 'changelog');
 		filename += ((changelogJson.product_name != null && changelogJson.version != null) ? '-' + changelogJson.version : '');
 		filename += '-' + Date.now().getFullYear();
 		filename += '-' + Date.now().getMonth();
@@ -50,7 +52,7 @@ class ChangelogGenerator {
 
 		filename += '.md';
 		trace('Generated changelog file: ' + filename);
-		File.saveContent((Compiler.getDefine('file_output_path_prefix') ?? '') + filename, resultChangelog);
+        File.saveContent(filename, resultChangelog);
 	}
 
 	static function checkForDupeFileName(filename:String, ?starting_index:Int = 0):String {
