@@ -1,0 +1,22 @@
+{
+    "product_name": "changelog-generator-test",
+    "version": "1.0.0",
+
+    "topics": [
+        {
+            "topic": "ADDITION",
+            "topic_id": "add"
+        }
+    ],
+
+    "entries": [
+        {
+            "topic_id": "add",
+            "text": "ChangelogGenerator"
+        },
+        {
+            "topic_id": "ADDED",
+            "text": "Your mom"
+        }
+    ]
+}
