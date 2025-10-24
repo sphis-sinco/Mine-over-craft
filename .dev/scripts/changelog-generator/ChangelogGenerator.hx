@@ -8,7 +8,15 @@ class ChangelogGenerator {
 	static var resultChangelog:String;
 
 	public static function main() {
-		changelogJson = Json.parse(File.getContent(Compiler.getDefine('file_input_path') + '.json' ?? 'changelog.json'));
+		var input_path = (Compiler.getDefine('file_input_path') ?? 'changelog') + '.json';
+		if (input_path == null || input_path == 'null.json')
+			input_path = 'changelog.json';
+
+        if (!FileSystem.exists(input_path))
+            throw 'Your input path ($input_path) doesnt exit'; 
+
+        trace('Your input path($input_path) exists!');
+		changelogJson = Json.parse(File.getContent(input_path));
 
 		var topics:Map<Dynamic, String> = new Map<Dynamic, String>();
 
@@ -57,7 +65,7 @@ class ChangelogGenerator {
 		}
 
 		if (index > 0) {
-            trace(finalFilename + ' exists ' + Std.string(index) + ' time(s)!');
+			trace(finalFilename + ' exists ' + Std.string(index) + ' time(s)!');
 			return finalFilename + '-' + Std.string(index);
 		} else
 			return finalFilename;
