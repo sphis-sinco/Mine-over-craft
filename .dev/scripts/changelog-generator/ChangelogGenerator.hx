@@ -1,3 +1,4 @@
+import sys.FileSystem;
 import sys.io.File;
 import haxe.Json;
 
@@ -17,7 +18,11 @@ class ChangelogGenerator {
 		}
 
 		trace('Parsing entries');
-		resultChangelog = '# '+(changelogJson.product_name ?? 'Changelog')+'' + ((changelogJson.version != null) ? ' v${changelogJson.version}' : '') + '\n';
+		resultChangelog = '# '
+			+ (changelogJson.product_name ?? 'Changelog')
+			+ ''
+			+ ((changelogJson.version != null) ? ' v${changelogJson.version}' : '')
+			+ '\n';
 
 		for (entry in changelogJson.entries) {
 			var finalEntry = '[${topics.get(entry.topic_id) ?? entry.topic_id}] ${entry.text}';
@@ -25,7 +30,36 @@ class ChangelogGenerator {
 			resultChangelog += finalEntry + '\n';
 		}
 
-		Sys.println(resultChangelog);
+		var filename = '';
+		filename = ((changelogJson.product_name != null) ? changelogJson.product_name : 'changelog');
+		filename += ((changelogJson.product_name != null && changelogJson.version != null) ? '-' + changelogJson.version : '');
+		filename += '-' + Date.now().getFullYear();
+		filename += '-' + Date.now().getMonth();
+		filename += '-' + Date.now().getDate();
+
+		filename = checkForDupeFileName(filename, 0);
+
+		filename += '.md';
+		trace('Generated changelog file: ' + filename);
+		File.saveContent(filename, resultChangelog);
+	}
+
+	static function checkForDupeFileName(filename:String, ?starting_index:Int = 0):String {
+		var finalFilename = filename;
+		var index = starting_index;
+
+		if (FileSystem.exists(finalFilename + '.md')) {
+			index += 1;
+
+			if (FileSystem.exists(finalFilename + '-' + Std.string(index) + '.md'))
+				return checkForDupeFileName(finalFilename, index);
+		}
+
+		if (index > 0) {
+            trace(finalFilename + ' exists ' + Std.string(index) + ' time(s)!');
+			return finalFilename + '-' + Std.string(index);
+		} else
+			return finalFilename;
 	}
 }
 
