@@ -1,3 +1,4 @@
+import haxe.macro.Compiler;
 import sys.FileSystem;
 import sys.io.File;
 import haxe.Json;
@@ -7,7 +8,7 @@ class ChangelogGenerator {
 	static var resultChangelog:String;
 
 	public static function main() {
-		changelogJson = Json.parse(File.getContent('changelog.json'));
+		changelogJson = Json.parse(File.getContent(Compiler.getDefine('file_input_path') + '.json' ?? 'changelog.json'));
 
 		var topics:Map<Dynamic, String> = new Map<Dynamic, String>();
 
@@ -25,7 +26,7 @@ class ChangelogGenerator {
 			+ '\n';
 
 		for (entry in changelogJson.entries) {
-			var finalEntry = '[${topics.get(entry.topic_id) ?? entry.topic_id}] ${entry.text}';
+			var finalEntry = '- [${topics.get(entry.topic_id) ?? entry.topic_id}] ${entry.text}';
 
 			resultChangelog += finalEntry + '\n';
 		}
@@ -41,7 +42,7 @@ class ChangelogGenerator {
 
 		filename += '.md';
 		trace('Generated changelog file: ' + filename);
-		File.saveContent(filename, resultChangelog);
+		File.saveContent(Compiler.getDefine('file_output_path_prefix') + filename, resultChangelog);
 	}
 
 	static function checkForDupeFileName(filename:String, ?starting_index:Int = 0):String {
